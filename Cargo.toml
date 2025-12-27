@@ -1,0 +1,13 @@
+[package]
+name = "pscan"
+version = "0.1.0"
+edition = "2024"
+description = "SYN Port Scanner"
+authors = ["Bastián Valencia <bastian.valencia@ug.uchile.cl>"]
+license = "MIT OR Apache-2.0"
+keywords = ["scanner", "port", "server", "cybersecurity"]
+categories = ["network-programming", "security"]
+readme = "README.md"
+
+[dependencies]
+pnet = "0.35.0"

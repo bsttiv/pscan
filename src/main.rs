@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{net::Ipv4Addr, str::FromStr};
 
 use clap::{Parser, Args};
 
@@ -28,6 +28,10 @@ impl FromStr for IntOrRange{
     }
 }
 
+fn valid_target_ip(s:&str) -> Result<Ipv4Addr, String>{
+    Ipv4Addr::from_str(s).map_err(|e|format!("Error parsing the target ip: {}. Please input a correct IPv4 address.", e))
+}
+
 #[derive(Parser)]
 #[command(name="PScan")]
 #[command(version, about)]
@@ -42,8 +46,8 @@ struct Cli{
 #[derive(Args)]
 #[group(requires_all=&["target", "port"], multiple=true, id="scanner_args")]
 struct ScannerArgs{
-    #[arg(short, long)]
-    target: String,
+    #[arg(short, long, value_parser=valid_target_ip)]
+    target: Ipv4Addr,
     #[arg(short, long, value_parser=IntOrRange::from_str)]
     port: IntOrRange,
     #[arg(short, long)]

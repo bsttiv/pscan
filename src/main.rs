@@ -1,6 +1,7 @@
 use std::{net::Ipv4Addr, str::FromStr};
 
 use clap::{Parser, Args};
+use pnet::datalink::{self, NetworkInterface};
 
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
@@ -32,6 +33,11 @@ fn valid_target_ip(s:&str) -> Result<Ipv4Addr, String>{
     Ipv4Addr::from_str(s).map_err(|e|format!("Error parsing the target ip: {}. Please input a correct IPv4 address.", e))
 }
 
+fn valid_interface(s:&str) -> Result<NetworkInterface, String>{
+    let interfaces = datalink::interfaces();
+    interfaces.iter().find(|i|i.name==s).ok_or(format!("No such interface: {}", s)).cloned()
+}
+
 #[derive(Parser)]
 #[command(name="PScan")]
 #[command(version, about)]
@@ -44,12 +50,14 @@ struct Cli{
 }
 
 #[derive(Args)]
-#[group(requires_all=&["target", "port"], multiple=true, id="scanner_args")]
+#[group(requires_all=&["target", "port", "interface"], multiple=true, id="scanner_args")]
 struct ScannerArgs{
     #[arg(short, long, value_parser=valid_target_ip)]
     target: Ipv4Addr,
     #[arg(short, long, value_parser=IntOrRange::from_str)]
     port: IntOrRange,
+    #[arg(short,long, value_parser=valid_interface)]
+    interface: NetworkInterface,
     #[arg(short, long)]
     decoy: Option<Vec<String>>
 }

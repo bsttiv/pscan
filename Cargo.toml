@@ -2,7 +2,7 @@
 name = "pscan"
 version = "0.1.0"
 edition = "2024"
-description = "SYN Port Scanner"
+description = "SYN Port Scanner written in Rust, with range and decoy scanning support."
 authors = ["Bastián Valencia <bastian.valencia@ug.uchile.cl>"]
 license = "MIT OR Apache-2.0"
 keywords = ["scanner", "port", "server", "cybersecurity"]
@@ -10,4 +10,6 @@ categories = ["network-programming", "security"]
 readme = "README.md"
 
 [dependencies]
+clap = { version = "4.5.53", features = ["derive"] }
 pnet = "0.35.0"
+rand = "0.9.2"

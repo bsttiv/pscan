@@ -13,7 +13,7 @@ mod utils;
 pub(super) struct Scanner{
     sender: Mutex<ScannerSender>,
     receiver: Mutex<ScannerReceiver> ,
-    rx_results: Receiver<bool>,
+    rx_results: Receiver<(bool, Ipv4Addr, u16)>,
     tx_target: Sender<(Ipv4Addr, u16)>,
     target: Ipv4Addr,
     source_ips: Vec<Ipv4Addr>,
@@ -23,7 +23,7 @@ pub(super) struct Scanner{
 impl Scanner{
     pub(super) fn new(args: ScannerArgs) -> Self{
         let (tx_target, rx_target) = std::sync::mpsc::channel();
-        let (tx_results, rx_results) = std::sync::mpsc::channel();
+        let (tx_results, rx_results) = std::sync::mpsc::channel::<(bool, Ipv4Addr, u16)>();
         let (ts, tr) = new_transport();
         let s = ScannerSender::new(ts, rx_target);
         let r = ScannerReceiver::new(tr, tx_results);

@@ -1,9 +1,8 @@
 mod cli;
 mod scanner;
 
-use clap::Parser;
-use cli::Cli;
+use cli::init;
 
 fn main(){
-    let _ = Cli::parse();
+    init();
 }

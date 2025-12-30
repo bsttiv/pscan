@@ -1,6 +1,6 @@
 use std::{str::FromStr, net::Ipv4Addr};
 
-use pnet::datalink::{self, NetworkInterface};
+use pnet::{datalink::{self, NetworkInterface}, util::MacAddr};
 
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
@@ -35,4 +35,13 @@ pub(super) fn valid_target_ip(s:&str) -> Result<Ipv4Addr, String>{
 pub(super) fn valid_interface(s:&str) -> Result<NetworkInterface, String>{
     let interfaces = datalink::interfaces();
     interfaces.iter().find(|i|i.name==s).ok_or(format!("No such interface: {}", s)).cloned()
+}
+
+pub(super) fn print_interfaces() {
+    let interfaces = datalink::interfaces();
+    for interface in interfaces{
+        let ips = interface.ips.iter().map(|a|a.to_string()).collect::<Vec<String>>().join(", ");
+        let mac = interface.mac.unwrap_or(MacAddr::zero());
+        println!("- Interface name: {} | Interface MAC: {:?} | Interface IPs: {}", interface.name, mac, ips)
+    }
 }

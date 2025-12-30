@@ -2,7 +2,9 @@ pub(crate) mod utils;
 
 use std::{net::Ipv4Addr, str::FromStr};
 
-use self::utils::{IntOrRange, valid_interface, valid_target_ip};
+use crate::scanner::Scanner;
+
+use self::utils::{IntOrRange, valid_interface, valid_target_ip, print_interfaces};
 
 use clap::{Parser, Args};
 use pnet::datalink::{NetworkInterface};
@@ -31,4 +33,13 @@ pub(super) struct ScannerArgs{
     pub(super) interface: NetworkInterface,
     #[arg(short, long)]
     pub(super) decoy: Option<Vec<String>>
+}
+
+pub(super) fn init(){
+    let c = Cli::parse();
+    if c.interfaces{
+        print_interfaces();
+        return
+    }
+    let _ = Scanner::new(c.scanner_args.unwrap());
 }

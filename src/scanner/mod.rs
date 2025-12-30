@@ -1,4 +1,4 @@
-use std::{net::{IpAddr, Ipv4Addr}, ops::Range, str::FromStr, sync::{Mutex, mpsc::{Receiver, Sender}}};
+use std::{net::{IpAddr, Ipv4Addr}, ops::Range, str::FromStr, sync::{Arc, Mutex, mpsc::{Receiver, Sender}}};
 
 
 use super::cli::{ScannerArgs, utils::IntOrRange};
@@ -9,10 +9,9 @@ mod sender;
 mod receiver;
 mod utils;
 
-#[allow(dead_code)]
 pub(super) struct Scanner{
-    sender: Mutex<ScannerSender>,
-    receiver: Mutex<ScannerReceiver> ,
+    sender: Arc<Mutex<ScannerSender>>,
+    receiver: Arc<Mutex<ScannerReceiver>>,
     rx_results: Receiver<(bool, Ipv4Addr, u16)>,
     tx_target: Sender<(Ipv4Addr, u16)>,
     target: Ipv4Addr,
@@ -47,13 +46,33 @@ impl Scanner{
             None => {vec![src]}
         };
         Scanner { 
-            sender: Mutex::new(s),
-            receiver: Mutex::new(r),
+            sender: Arc::new(Mutex::new(s)),
+            receiver: Arc::new(Mutex::new(r)),
             rx_results,
             tx_target,
             target: args.target,
             source_ips,
             ports
+        }
+    }
+    pub(crate) fn scan(self){
+        std::thread::spawn(move || {
+            let recv = Arc::clone(&self.receiver);
+            let mut recv = recv.lock().unwrap();
+            recv.receive(&self.target);
+        });
+        std::thread::spawn(move || {
+            let send = Arc::clone(&self.sender);
+            let mut send = send.lock().unwrap();
+            send.send(self.source_ips);
+        });
+        for port in self.ports{
+            self.tx_target.send((self.target, port)).unwrap();
+        }
+        for (result, ip, port) in self.rx_results{
+            if result{
+                println!("Open port: {}:{}", ip, port);
+            }
         }
     }
 }

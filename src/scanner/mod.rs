@@ -20,9 +20,7 @@ pub(super) struct Scanner{
     ports: Vec<u16>
 }
 
-#[allow(dead_code)]
 impl Scanner{
-    #[allow(unused_variables)]
     pub(super) fn new(args: ScannerArgs) -> Self{
         let (tx_target, rx_target) = std::sync::mpsc::channel();
         let (tx_results, rx_results) = std::sync::mpsc::channel();

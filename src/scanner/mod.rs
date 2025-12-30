@@ -1,4 +1,4 @@
-use std::{net::{IpAddr, Ipv4Addr}, ops::Range, str::FromStr, sync::mpsc::{Receiver, Sender}};
+use std::{net::{IpAddr, Ipv4Addr}, ops::Range, str::FromStr, sync::{Mutex, mpsc::{Receiver, Sender}}};
 
 
 use super::cli::{ScannerArgs, utils::IntOrRange};
@@ -11,8 +11,8 @@ mod utils;
 
 #[allow(dead_code)]
 pub(super) struct Scanner{
-    sender: ScannerSender,
-    receiver: ScannerReceiver,
+    sender: Mutex<ScannerSender>,
+    receiver: Mutex<ScannerReceiver> ,
     rx_results: Receiver<bool>,
     tx_target: Sender<(Ipv4Addr, u16)>,
     target: Ipv4Addr,
@@ -47,8 +47,8 @@ impl Scanner{
             None => {vec![src]}
         };
         Scanner { 
-            sender: s,
-            receiver: r,
+            sender: Mutex::new(s),
+            receiver: Mutex::new(r),
             rx_results,
             tx_target,
             target: args.target,

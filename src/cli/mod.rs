@@ -1,4 +1,4 @@
-mod utils;
+pub(crate) mod utils;
 
 use std::{net::Ipv4Addr, str::FromStr};
 

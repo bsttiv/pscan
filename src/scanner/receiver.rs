@@ -1,4 +1,4 @@
-use std::{net::{IpAddr, Ipv4Addr}, sync::mpsc::Sender};
+use std::{net::Ipv4Addr, sync::mpsc::Sender};
 
 use pnet::{packet::{Packet, ip::IpNextHeaderProtocols, ipv4::Ipv4Packet, tcp::{TcpFlags, TcpPacket}}, transport::{TransportReceiver, ipv4_packet_iter}};
 

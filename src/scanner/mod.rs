@@ -1,5 +1,7 @@
 use std::{net::Ipv4Addr, sync::mpsc::{Receiver, Sender}};
 
+use pnet::datalink::NetworkInterface;
+
 use super::cli::ScannerArgs;
 use self::{receiver::ScannerReceiver, sender::ScannerSender, utils::new_transport};
 
@@ -13,7 +15,8 @@ pub(super) struct Scanner{
     sender: ScannerSender,
     receiver: ScannerReceiver,
     rx_results: Receiver<bool>,
-    tx_target: Sender<(Ipv4Addr, u16)>
+    tx_target: Sender<(Ipv4Addr, u16)>,
+    interface: NetworkInterface
 }
 
 #[allow(dead_code)]
@@ -29,7 +32,8 @@ impl Scanner{
             sender: s,
             receiver: r,
             rx_results,
-            tx_target
+            tx_target,
+            interface: args.interface
         }
     }
 }

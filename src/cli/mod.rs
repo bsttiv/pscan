@@ -41,5 +41,6 @@ pub(super) fn init(){
         print_interfaces();
         return
     }
-    let _ = Scanner::new(c.scanner_args.unwrap());
+    let s = Scanner::new(c.scanner_args.unwrap());
+    s.scan();
 }

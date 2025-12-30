@@ -3,7 +3,6 @@ use std::net::Ipv4Addr;
 use pnet::packet::{MutablePacket, ip::IpNextHeaderProtocols, ipv4::{MutableIpv4Packet, checksum}, tcp::{MutableTcpPacket, TcpFlags, ipv4_checksum}};
 use rand::random;
 
-#[allow(dead_code)]
 pub(super) fn create_packet<'a>(port:u16, target:Ipv4Addr, source:Ipv4Addr, buf:&'a mut [u8]) -> MutableIpv4Packet<'a>{
     let mut ip_packet = MutableIpv4Packet::new(buf).expect("Error: Could not create IPv4 packet");
     ip_packet.set_version(4);

@@ -1,3 +1,8 @@
-fn main() {
-    println!("Hello, world!");
+mod cli;
+mod scanner;
+
+use cli::init;
+
+fn main(){
+    init();
 }

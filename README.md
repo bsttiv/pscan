@@ -11,7 +11,56 @@ I wrote this program as a personal project merely for educational purposes. For 
 
 # Usage
 
-Todo
+First, to install pscan, run 
+
+```shell
+foo@bar:~$ cargo install pscan
+```
+
+Then, you must give CAP_NET_RAW Linux capability to pscan binary:
+
+```shell
+foo@bar:~$ sudo setcap 'cap_net_raw+ep' /path/to/pscan
+```
+
+Then, check the help flag to see all the options
+
+```shell
+foo@bar:~$ pscan -h
+SYN Port Scanner written in Rust, with range and decoy scanning support.
+
+Usage: pscan [OPTIONS] --target <TARGET> --port <PORT> --interface <INTERFACE>
+
+Options:
+  -t, --target <TARGET>
+  -p, --port <PORT>
+  -i, --interface <INTERFACE>
+  -d, --decoy <DECOY>
+      --interfaces
+  -h, --help                   Print help
+  -V, --version                Print version
+```
+
+Want to see the interfaces you can use for port scanning?
+
+```shell
+foo@bar:~$ pscan --interfaces
+- Interface name: lo | Interface MAC: 00:00:00:00:00:00 | Interface IPs: 127.0.0.1
+- ...
+```
+Then you can scan a target ip (example 0.0.0.0) for open ports (range 1-443) with your interface (lets say eth0) like this:
+
+```shell
+foo@bar:~$ pscan -t 0.0.0.0 -p 1-443 -i eth0
+Open port: 0.0.0.0:80
+```
+
+# TODO
+
+- Maybe sending the RST request back after a SYN + ACK response
+- Complete the decoy implementation
+- Optimize the timeout for each request
+- Make the program end (LOL)
 
 # References
 - [TCP/IP packets - inc 0x0](https://inc0x0.com/tcp-ip-packets-introduction/)

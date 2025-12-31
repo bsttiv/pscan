@@ -57,6 +57,7 @@ Open port: 0.0.0.0:80
 
 # TODO
 
+- Better error handling
 - Maybe sending the RST request back after a SYN + ACK response
 - Complete the decoy implementation
 - Optimize the timeout for each request
